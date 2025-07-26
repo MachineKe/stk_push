@@ -3,6 +3,10 @@
 To start your server with automatic restarts on file changes, use the following command:
 
 ```bash
+# install dependencies
+npm install
+
+# run server
 npm run dev
 ```
 
