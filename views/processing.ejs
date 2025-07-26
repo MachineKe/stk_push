@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Processing Payment</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="900">
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <h2>Processing your payment...</h2>
+    <p>Please complete the payment on your phone. This page will update automatically.</p>
+    <script>
+        const checkoutRequestId = "<%= checkoutRequestId %>";
+        const pollInterval = 2000; // 2 seconds
+
+        async function checkStatus() {
+            try {
+                const res = await fetch(`/transaction-status/${checkoutRequestId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === "success") {
+                        window.location.href = "/success";
+                    } else if (data.status === "failed") {
+                        window.location.href = "/failed";
+                    } // else still pending
+                }
+            } catch (err) {
+                // Optionally handle error
+            }
+            setTimeout(checkStatus, pollInterval);
+        }
+
+        checkStatus();
+    </script>
+</body>
+</html>
